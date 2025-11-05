@@ -7,7 +7,7 @@
 # 1 "C:/Users/t00904/.mchp_packs/Microchip/PIC12-16F1xxx_DFP/1.2.63/xc8\\pic\\include\\language_support.h" 1 3
 # 2 "<built-in>" 2
 # 1 "main.c" 2
-# 98 "main.c"
+# 80 "main.c"
 # 1 "./mcc_generated_files/mcc.h" 1
 # 49 "./mcc_generated_files/mcc.h"
 # 1 "C:/Users/t00904/.mchp_packs/Microchip/PIC12-16F1xxx_DFP/1.2.63/xc8\\pic\\include\\xc.h" 1 3
@@ -5191,7 +5191,7 @@ void SYSTEM_Initialize(void);
 void OSCILLATOR_Initialize(void);
 # 100 "./mcc_generated_files/mcc.h"
 void WDT_Initialize(void);
-# 98 "main.c" 2
+# 80 "main.c" 2
 
 
 void POS_ON(void);
@@ -5257,7 +5257,7 @@ volatile uint8_t T10MS_CNT = 0;
 _Bool fException = 0;
 _Bool fException2 = 0;
 _Bool fLampSide = 0;
-# 177 "main.c"
+# 159 "main.c"
 void LoBeam_ON(void) {
 
   PWM4_LoadDutyValue(((201<<2)));
@@ -5405,44 +5405,88 @@ void LED_output(void) {
 
   T10MS_CNT = 0;
 
-  if(csFlag.POS==1){
-    POS_ON();
-  }else{
+  if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 0 && csFlag.POS == 0) {
+
+    do { LATAbits.LATA2 = 0; } while(0);
+    LoBeam_OFF();
     POS_OFF();
-  }
-
-  if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 0 ) {
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 0 && csFlag.POS == 1) {
 
     do { LATAbits.LATA2 = 0; } while(0);
     LoBeam_OFF();
-  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 1 ) {
+    POS_ON();
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 1 && csFlag.POS == 0) {
 
     do { LATAbits.LATA2 = 0; } while(0);
+
     DRL_ON();
-  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 0 ) {
+    POS_OFF();
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 1 && csFlag.POS == 1) {
+
+    do { LATAbits.LATA2 = 0; } while(0);
+
+    DRL_ON();
+    POS_ON();
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 0 && csFlag.POS == 0) {
 
     do { LATAbits.LATA2 = 0; } while(0);
     LoBeam_ON();
-  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 1 ) {
+    POS_OFF();
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 0 && csFlag.POS == 1) {
 
     do { LATAbits.LATA2 = 0; } while(0);
     LoBeam_ON();
-  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 0 ) {
+    POS_ON();
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 1 && csFlag.POS == 0) {
+
+    do { LATAbits.LATA2 = 0; } while(0);
+    LoBeam_ON();
+    POS_OFF();
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 1 && csFlag.POS == 1) {
+
+    do { LATAbits.LATA2 = 0; } while(0);
+    LoBeam_ON();
+    POS_ON();
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 0 && csFlag.POS == 0) {
 
     do { LATAbits.LATA2 = 1; } while(0);
     LoBeam_OFF();
-  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 1 ) {
+    POS_OFF();
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 0 && csFlag.POS == 1) {
+
+    do { LATAbits.LATA2 = 0; } while(0);
+    LoBeam_OFF();
+    POS_ON();
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 1 && csFlag.POS == 0) {
+
+    do { LATAbits.LATA2 = 0; } while(0);
+    LoBeam_OFF();
+    DRL_ON();
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 1 && csFlag.POS == 1) {
 
     do { LATAbits.LATA2 = 0; } while(0);
     DRL_ON();
-  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 0 ) {
+    POS_ON();
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 0 && csFlag.POS == 0) {
 
     do { LATAbits.LATA2 = 1; } while(0);
     LoBeam_ON();
-  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 1 ) {
+    POS_OFF();
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 0 && csFlag.POS == 1) {
 
     do { LATAbits.LATA2 = 1; } while(0);
     LoBeam_ON();
+    POS_ON();
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 1 && csFlag.POS == 0) {
+
+    do { LATAbits.LATA2 = 1; } while(0);
+    LoBeam_ON();
+    POS_OFF();
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 1 && csFlag.POS == 1) {
+
+    do { LATAbits.LATA2 = 1; } while(0);
+    LoBeam_ON();
+    POS_ON();
   }
 
   for (uint8_t i = 0; i < 11; i++) {

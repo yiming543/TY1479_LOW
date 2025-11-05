@@ -60,30 +60,12 @@
 //                                  ------------
 //
 //***********************************************************************************
-// 20250915 TY1479_HIGH_R V01 CS:86C1
-// 20250915 TY1479_HIGH_L V01 CS:8741
-// 參考 TY1479_HIGH件動作表.xlsx
-// 缺少的CS由0x00修正為0xFF
-// HiBeam active-high
-// DRL active-low
-// DRL(5晶) 串 POS(3晶)
-// TY1479 沒有P2 變成第2行車(功能同P2)
-// 行車白光 P2黃光
-
-//20251016 TY1479_HIGH V02 CS:EC60
-//新增RB3判斷是左邊的燈還是右邊的燈
-//加RB3電阻對地 是R邊
-//沒加RB3電阻對地 是L邊
-
-//20251030 TY1479_HIGH V03 CS:D7CE
-//修改CHECKSUM
-
 // 20251031 V04 CS:ED41
 // 不用柯松資料
 // 抓到所有資料(包括車子沒有的信號)
 // 修正不符合KD件的亮燈方式
 
-//20251105 V01 CS:4638
+//20251105 V01 CS:DCCF
 //共用高配PCB
 //畫行，近/遠燈共用光源
 //畫行 40%，近燈 100%
@@ -321,44 +303,88 @@ void LED_output(void) {
 
   T10MS_CNT = 0; // 重置2000ms計數器
 
-  if(csFlag.POS==1){
-    POS_ON();     // POS ON
-  }else{
-    POS_OFF();    // 位置 OFF
-  }
-
-  if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 0 ) { // 0
+  if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 0 && csFlag.POS == 0) { // 0
     // ALL OFF
     HiBeam_OFF(); // 遠燈 OFF
     LoBeam_OFF(); // 近燈 OFF
-  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 1 ) { // 1
+    POS_OFF();    // 晝行 OFF
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 0 && csFlag.POS == 1) { // 1
+    // POS
+    HiBeam_OFF(); // 遠燈 OFF
+    LoBeam_OFF(); // 近燈 OFF
+    POS_ON();     // POS ON
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 1 && csFlag.POS == 0) { // 2
     // DRL
     HiBeam_OFF(); // 遠燈 OFF
+    // LoBeam_OFF(); // 近燈 OFF
     DRL_ON();     // 晝行 ON
-  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 0 ) { // 2
+    POS_OFF();    // 晝行 OFF
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 0 && csFlag.DRL == 1 && csFlag.POS == 1) { // 3
+    // DRL+POS
+    HiBeam_OFF(); // 遠燈 OFF
+    // LoBeam_OFF(); // 近燈 OFF
+    DRL_ON();     // DRL ON
+    POS_ON();     // POS ON
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 0 && csFlag.POS == 0) { // 4
     // LOBEAM
     HiBeam_OFF(); // 遠燈 OFF
     LoBeam_ON();  // 近燈 ON
-  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 1 ) { // 3
-    // LOBEAM+DRL
-    HiBeam_OFF();  // 遠燈 ON
-    LoBeam_ON(); // 近燈 OFF
-  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 0 ) { // 4
+    POS_OFF();    // 晝行 OFF
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 0 && csFlag.POS == 1) { // 5
+    // LOBEAM + POS
+    HiBeam_OFF(); // 遠燈 OFF
+    LoBeam_ON();  // 近燈 ON
+    POS_ON();     // POS ON
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 1 && csFlag.POS == 0) { // 6
+    // LOBEAM + DRL
+    HiBeam_OFF(); // 遠燈 OFF
+    LoBeam_ON();  // 近燈 ON
+    POS_OFF();    // 晝行 OFF
+  } else if (csFlag.HiBeam == 0 && csFlag.LoBeam == 1 && csFlag.DRL == 1 && csFlag.POS == 1) { // 7
+    // LOBEAM + DRL+POS
+    HiBeam_OFF(); // 遠燈 OFF
+    LoBeam_ON();  // 近燈 ON
+    POS_ON();     // POS ON
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 0 && csFlag.POS == 0) { // 8
     // HiBeam
     HiBeam_ON();  // 遠燈 ON
     LoBeam_OFF(); // 近燈 OFF
-  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 1 ) { // 5
+    POS_OFF();    // 晝行 OFF
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 0 && csFlag.POS == 1) { // 9
+    // HIBeam + POS
+    HiBeam_OFF(); // 遠燈 OFF
+    LoBeam_OFF(); // 近燈 OFF
+    POS_ON();     // POS ON
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 1 && csFlag.POS == 0) { // 10
     // HIBeam + DRL
     HiBeam_OFF(); // 遠燈 OFF
+    LoBeam_OFF(); // 近燈 OFF
     DRL_ON();     // 晝行 ON
-  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 0 ) { // 6
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 0 && csFlag.DRL == 1 && csFlag.POS == 1) { // 11
+    // HIBeam + DRL+POS
+    HiBeam_OFF(); // 遠燈 OFF
+    DRL_ON();     // 晝行 ON
+    POS_ON();     // POS ON
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 0 && csFlag.POS == 0) { // 12
     // HIBeam + LOBEAM
     HiBeam_ON();  // 遠燈 ON
     LoBeam_ON();  // 近燈 ON
-  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 1 ) { // 7
-    // HIBeam + LOBEAM+DRL+DRL
+    POS_OFF();    // POS OFF
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 0 && csFlag.POS == 1) { // 13
+    // HIBeam + LOBEAM+POS
     HiBeam_ON();  // 遠燈 ON
     LoBeam_ON();  // 近燈 ON
+    POS_ON();     // POS ON
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 1 && csFlag.POS == 0) { // 14
+    // HIBeam + LOBEAM+DRL
+    HiBeam_ON();  // 遠燈 ON
+    LoBeam_ON();  // 近燈 ON
+    POS_OFF();    // POS OFF
+  } else if (csFlag.HiBeam == 1 && csFlag.LoBeam == 1 && csFlag.DRL == 1 && csFlag.POS == 1) { // 15
+    // HIBeam + LOBEAM+DRL+POS
+    HiBeam_ON();  // 遠燈 ON
+    LoBeam_ON();  // 近燈 ON
+    POS_ON();     // POS ON
   }
 
   for (uint8_t i = 0; i < 11; i++) {
