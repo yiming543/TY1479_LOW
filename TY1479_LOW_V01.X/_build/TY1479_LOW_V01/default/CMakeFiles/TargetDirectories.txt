@@ -1,0 +1,4 @@
+D:/yiming/00work/TY1479_LOW_V01.X/_build/TY1479_LOW_V01/default/CMakeFiles/TY1479_LOW_V01_default_default_XC8_compile.dir
+D:/yiming/00work/TY1479_LOW_V01.X/_build/TY1479_LOW_V01/default/CMakeFiles/TY1479_LOW_V01_default_image_mVJHHDeF.dir
+D:/yiming/00work/TY1479_LOW_V01.X/_build/TY1479_LOW_V01/default/CMakeFiles/edit_cache.dir
+D:/yiming/00work/TY1479_LOW_V01.X/_build/TY1479_LOW_V01/default/CMakeFiles/rebuild_cache.dir
